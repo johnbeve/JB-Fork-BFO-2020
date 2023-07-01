@@ -1,0 +1,12 @@
+# Title: Multiple Defintions
+# Constraint: Any entity must have at most one skos:definition. 
+# Returns: IRI of entity having more than one skos:definition, its rdfs:label, and each skos:definition. 
+
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT DISTINCT (STR(?entity) AS ?entityIRI) ?entity ?value1 ?value2
+WHERE {
+  ?entity skos:definition ?value1, ?value2 .
+  FILTER (?value1 != ?value2)
+  FILTER NOT EXISTS { ?entity owl:deprecated true }
+} ORDER BY ?entityIRI

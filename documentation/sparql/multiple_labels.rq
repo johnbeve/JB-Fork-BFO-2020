@@ -1,0 +1,12 @@
+# Title: Multiple Labels
+# Constraint: Any entity must have at most one rdfs:label. 
+# Returns: IRI of entity having more than one rdfs:label, as well all associated rdfs:label(s)
+
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT DISTINCT (STR(?entity) AS ?entityIRI) ?value ?value2 
+WHERE {
+  ?entity rdfs:label ?value, ?value2 .
+  FILTER (?value != ?value2 && !isBlank(?entity) && NOT EXISTS { ?entity owl:deprecated true })
+} ORDER BY ?entityIRI

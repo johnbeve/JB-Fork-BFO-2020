@@ -1,0 +1,20 @@
+# Title: Missing Label
+# Constraint Any class or object property must have an rdfs:label.
+# Returns: IRI of class or object property that either has an empty rdfs:label or does not have an rdfs:label. 
+# Solution: 
+#    Add rdfs:label and string or add string to rdfs:label. 
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+SELECT DISTINCT (STR(?entity) AS ?entityIRI)
+WHERE {
+  VALUES ?type {owl:Class owl:ObjectProperty}
+  ?entity a ?type .
+  OPTIONAL { ?entity rdfs:label ?label . }
+  FILTER (!bound(?label) || ?label = " ")
+  FILTER (!isBlank(?entity))
+  MINUS { ?entity a owl:Ontology . }
+  MINUS { ?entity owl:deprecated true . }
+} ORDER BY ?entity
